@@ -22,12 +22,12 @@ Circular buffer with 4 `char` elements:
     {
         CircularBuffer<char, 4> cb;
 
-        while(!cb.empty())
+        while(!cb.full()) {
             cb.put('c');
             cb.put('h');
             cb.put('a');
             cb.put('r');
-
+        }
         while(cb.has_unread_data())
             std::cout << cb.get(); 
     }
@@ -45,12 +45,12 @@ Circular buffer with 4 `std::string` elements:
     {
         CircularBuffer<std::string, 4> cb;
 
-        while(!cb.empty())
+        while(!cb.full()) {
             cb.put(std::string("These"));
             cb.put(std::string("are"));
             cb.put(std::string("in"));
             cb.put(std::string("heap"));
-
+        }
         std::cout << cb << std::endl;
     }
 
