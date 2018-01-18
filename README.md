@@ -31,6 +31,8 @@ Circular buffer with 4 `char` elements:
         while(cb.has_unread_data())
             std::cout << cb.get(); 
     }
+    
+![stack based singly linked list circular buffer](https://github.com/Osteri/circularbuffer/blob/master/wiki/char.png?raw=true)
 
 ***
 **Case 2:**
@@ -51,6 +53,8 @@ Circular buffer with 4 `std::string` elements:
 
         std::cout << cb << std::endl;
     }
+
+![stack based singly linked list circular buffer](https://github.com/Osteri/circularbuffer/blob/master/wiki/string.png?raw=true)
 
 ***
 **Case 3:**
