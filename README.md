@@ -15,7 +15,6 @@ Header-only inclusion is enough.
 **Case 1:**
 Circular buffer with 4 `char` elements:
 
-    ```cpp
     #include "circularbuffer.hpp"
     #include <iostream>
 
@@ -32,7 +31,6 @@ Circular buffer with 4 `char` elements:
         while(cb.has_unread_data())
             std::cout << cb.get(); 
     }
-    ```
     
 ![stack based singly linked list circular buffer](https://github.com/Osteri/circularbuffer/blob/master/wiki/char.png?raw=true)
 
@@ -40,7 +38,6 @@ Circular buffer with 4 `char` elements:
 **Case 2:**
 Circular buffer with 4 `std::string` elements:
 
-    ```cpp
     #include "circularbuffer.hpp"
     #include <iostream>
 
@@ -56,7 +53,6 @@ Circular buffer with 4 `std::string` elements:
         }
         std::cout << cb << std::endl;
     }
-    ```
 
 ![stack based singly linked list circular buffer](https://github.com/Osteri/circularbuffer/blob/master/wiki/string.png?raw=true)
 
@@ -64,7 +60,6 @@ Circular buffer with 4 `std::string` elements:
 **Case 3:**
 Circular buffer with 2 `char` elements:
 
-    ```cpp
     #include "circularbuffer.hpp"
     #include <iostream>
 
@@ -76,7 +71,6 @@ Circular buffer with 2 `char` elements:
         cb.put('c');
         cb.put('d');
     }
-    ```
 
 Notice how we overwrite the oldest data when its not being controlled. The characters 'a' and 'b' are now being overwritten with 'c' and 'd', since we didn't check before writing and the buffer size is 2. This could be used when maximal throughput is very important.
 

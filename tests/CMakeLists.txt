@@ -1,5 +1,3 @@
-cmake_minimum_required(VERSION 2.8)
-
-project(cb_test)
+project(circularbuffer-tests)
 add_executable(${PROJECT_NAME} "test.cpp")
-add_definitions(-std=c++11)
+add_test(NAME ${PROJECT_NAME} COMMAND ${PROJECT_NAME})
