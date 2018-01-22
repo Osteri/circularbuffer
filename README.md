@@ -72,7 +72,7 @@ Circular buffer with 2 `char` elements:
         cb.put('d');
     }
 
-Notice how we overwrite the oldest data when its not being controlled. The characters 'a' and 'b' are now being overwritten with 'c' and 'd', since we didn't check before writing and the buffer size is 2. This could be used when maximal throughput is very important.
+Notice how we overwrite the oldest data when it isn't being controlled. The characters 'a' and 'b' are now being overwritten with 'c' and 'd', since we didn't check before writing and because the buffer size is 2. This could be used when maximal throughput is very important.
 
 ***
 
@@ -85,7 +85,7 @@ Notice how we overwrite the oldest data when its not being controlled. The chara
 
 ### Other
 
-There are unefficient implementations of circular buffers available on the Internet. Some of them use random access with the help of modulo bounds checking, which is costly for embedded systems.
+There are unefficient implementations of circular buffers available on the Internet. Some of them use random access with the help of modulo in bounds checking, which is costly in embedded systems.
 
 **TODO**:
 * support initializer lists

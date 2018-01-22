@@ -25,7 +25,7 @@ int main() {
         cb.put(std::string("eight"));
         cb.put(std::string("nine"));
         cb.put(std::string("ten"));
-        /* Read */
+
         std::cout << "Result: " << cb << '\n';
     }
 
@@ -137,7 +137,8 @@ int main() {
         auto it = cb.begin();
         std::advance(it, 2);
         std::cout << "Advance iterator 2 times in "<< cb << '\n'
-                  << "Result: "<< *it;
+                  << "Result: "<< *it 
+                  << "\n";
     }
 
     return 0;
