@@ -81,7 +81,7 @@ Notice how we overwrite the oldest data when its not being controlled. The chara
     mkdir build && cd !$
     cmake ..
     make
-    ./cb_test
+    ./circularbuffer-tests
 
 ### Other
 
