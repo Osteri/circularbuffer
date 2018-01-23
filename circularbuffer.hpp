@@ -13,11 +13,9 @@ public:
 template<typename T>
 struct CB_it {
     CB_it (SLL<T>* sll) : r{sll}, w{sll} {}
-    CB_it (CB_it&) = default;
     CB_it (CB_it&&) = default;
     CB_it (const CB_it&) = default;
-
-    CB_it (T d) { w->data = d; }
+    CB_it (const T& d) { w->data = d; }
 
     /* Iterator traits for std algorithms. */
     typedef T value_type;
@@ -27,30 +25,28 @@ struct CB_it {
     typedef std::forward_iterator_tag iterator_category;
 
     CB_it operator ++() { /* ++pre */
-        //r->read = false;
         r = r->forward;
         return *this;
     }
     CB_it operator ++(int) { /* post++ */
         CB_it it(r);
-        //r->read = false;
         r = r->forward;
         return it;
     }
-    CB_it operator =(T data) { /* add data */
+    CB_it& operator =(const T& data) { /* add data */
         w->read = false;
         w->data = data;
         w = w->forward;
     }
-    inline T& operator *() { /* de-reference */
+    T& operator *() { /* de-reference */
         r->read = true;
         return r->data;
     }
-    inline bool operator ==(CB_it& rhs) {
-        return this == &rhs;
+    inline bool operator ==(const CB_it& rhs) const noexcept {
+        return (this->r == rhs.r || this->w == rhs.w);
     }
-    inline bool operator !=(CB_it& rhs) {
-        return this != &rhs;
+    inline bool operator !=(const CB_it& rhs) const noexcept {
+        return (this->r != rhs.r || this->w != rhs.w);
     }
     inline bool is_full() const noexcept { return w->read == false; }
     inline bool has_unread_data() const noexcept { return r->read == true; }
@@ -64,14 +60,18 @@ template<typename T, const size_t N>
 class CircularBuffer
 {
 public:
-    CircularBuffer() noexcept : it{elements} { init_links(); }
+    CircularBuffer() : it{elements} { init_links(); }
     CircularBuffer(const CircularBuffer&) = delete;
     CircularBuffer& operator=(const CircularBuffer&) = delete;
 
-    inline CB_it<T> begin() { return it; }
-    inline CB_it<T> end() { return begin(); }
+    /* Possibly remove std::advance from here in the future.
+     * Alternative way: construct iterators from elements[0..N]. */
+    CB_it<T> begin() { auto tmp(it); return tmp; }
+    CB_it<T> end() { auto tmp(it); std::advance(tmp, N-1); return tmp; }
+    const CB_it<T> cbegin() { auto tmp(it); return tmp; }
+    const CB_it<T> cend() { auto tmp(it); std::advance(tmp, N-1); return tmp; }
 
-    void put(T data) noexcept { it = data; /* InputIterator */ }
+    void put(const T& data) noexcept { it = data; /* InputIterator */ }
     T get() noexcept { return *it++; } /* OutputIterator*/
 
     inline bool is_full() const noexcept { return it.is_full(); }
