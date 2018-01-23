@@ -87,6 +87,21 @@ Notice how we overwrite the oldest data when it isn't being controlled. The char
 
 There are unefficient implementations of circular buffers available on the Internet. Some of them use random access with the help of modulo in bounds checking, which is costly in embedded systems.
 
+#### Asymptotic complexity for API calls
+
+Size of the buffer represents n:
+
+* `CircularBuffer::begin()` - **𝛰(n)** - possibly **𝛰(1)** in the future
+* `CircularBuffer::end()` - **𝛰(n)** - possibly **𝛰(1)** in the future
+* `CircularBuffer::put()` - **𝛰(1)**
+* `CircularBuffer::get()` - **𝛰(1)**
+* `CircularBuffer::size()` - **𝛰(1)**
+* `CircularBuffer::clear()` - **𝛰(n)**
+* `CircularBuffer::is_full()` - **𝛰((1)**
+* `CircularBuffer::has_unread_data()` - **𝛰(1)**
+
+Avoid using `begin()` and `end()` at this point as much as possible. Use `is_full()` and `has_unread_data()` for flow control and `put()`/`get()` for setting/getting data fastly.
+
 **TODO**:
 * support initializer lists
 

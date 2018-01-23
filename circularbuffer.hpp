@@ -2,6 +2,8 @@
 #include <type_traits>
 #include <iterator>
 
+/* Singly Linked List (SLL) data structure. Synonyms: link or node,
+ * which also carries the actual data. */
 template<typename T>
 struct SLL {
 public:
@@ -10,6 +12,17 @@ public:
     T data;
 };
 
+/* Helper class (or struct) for iterating through CircularBuffer(s).
+ * CircularBuffer is a container-alike type; linked in-between with
+ * SLL's. We don't use SLL pointers for the linking, since there
+ * needs to be a more sophisticated approach accessing the elements
+ * other than raw pointers.
+ *
+ * Raw pointers are bad, and they offer only random access, which could
+ * seg fault. With own iterator class, we can abstract the raw memory access
+ * away, so we can *almost* carelessly call the API.
+ *
+ * This *should* be compatible with C++ standard 'ForwardIterator'. */
 template<typename T>
 struct CB_it {
     CB_it (SLL<T>* sll) : r{sll}, w{sll} {}
@@ -56,6 +69,7 @@ private: /* read and write pointers are separated in CB */
     SLL<T>* w;
 };
 
+/* Actual implementation. */
 template<typename T, const size_t N>
 class CircularBuffer
 {
@@ -71,7 +85,7 @@ public:
     const CB_it<T> cbegin() { auto tmp(it); return tmp; }
     const CB_it<T> cend() { auto tmp(it); std::advance(tmp, N-1); return tmp; }
 
-    void put(const T& data) noexcept { it = data; /* InputIterator */ }
+    void put(const T& data) noexcept { it = data; } /* InputIterator */
     T get() noexcept { return *it++; } /* OutputIterator*/
 
     inline bool is_full() const noexcept { return it.is_full(); }
