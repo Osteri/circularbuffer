@@ -69,6 +69,8 @@ Circular buffer with 2 `char` elements:
         CircularBuffer<char, 2> cb;
         cb.put('a');
         cb.put('b');
+        cb.put('c');
+        cb.put('d');
     }
 
 Notice how we overwrite the oldest data when it isn't being controlled. The characters 'a' and 'b' are now being overwritten with 'c' and 'd', since we didn't check before writing and because the buffer size is 2. This could be used when maximal throughput is very important.
@@ -110,8 +112,8 @@ There are unefficient implementations of circular buffers available on the Inter
 
 Size of the buffer represents n:
 
-* `CircularBuffer::begin()` - **𝛰(n)** - possibly **𝛰(1)** in the future
-* `CircularBuffer::end()` - **𝛰(n)** - possibly **𝛰(1)** in the future
+* `CircularBuffer::begin()` - **𝛰(1)**
+* `CircularBuffer::end()` - **𝛰(1)**
 * `CircularBuffer::put()` - **𝛰(1)**
 * `CircularBuffer::get()` - **𝛰(1)**
 * `CircularBuffer::size()` - **𝛰(1)**
