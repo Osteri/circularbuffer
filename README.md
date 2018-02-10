@@ -8,8 +8,10 @@ This implementation isn't thread safe and doesn't use exceptions.
 
 ### How to install/use it?
 Header-only inclusion is enough.
+
     wget https://raw.githubusercontent.com/Osteri/circularbuffer/master/circularbuffer.hpp
     #include "circularbuffer.hpp"
+
 ### Examples
 **Case 1:**
 Circular buffer with 4 `char` elements:
