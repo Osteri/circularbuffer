@@ -108,7 +108,7 @@ int main() {
         cb.put('a');
         cb.put('b');
         auto it = cb.begin();
-        *it = 'a';
+        //*it = 'a';
         std::cout << "Iterator should give value 'a' from " << cb << '\n' <<
                      "Result: " << *it << '\n';
         std::cout << "Iterator should give value 'b' from " << cb << '\n' <<
@@ -120,7 +120,7 @@ int main() {
     {
         CircularBuffer<char, 10> cb;
         /* Write */
-        while (!cb.is_full())
+        while (!cb.full())
             cb.put('o');
         cb.put('a');
         cb.put('b');
