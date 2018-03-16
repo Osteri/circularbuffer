@@ -71,10 +71,21 @@ int main() {
              std::cout << *it;
         std::cout << '\n';
 
-        std::cout << "Iterating with 'post C++11' for loops. \n";
+        std::cout << "Iterating with 'post C++11 for loops'. \n";
         std::cout << "Result: ";
         for (auto it : cb)
             std::cout << it;
+    }
+
+    /* OutputIterator functionality. */
+    std::cout << '\n';
+    {
+        CircularBuffer<char, 2> cb;
+        auto it = cb.begin();
+        *it = 'g';
+        it++;
+        *it = 'h';
+        it++;
     }
 
     /* These shouldn't compile. Only include compile errors a as comments. */
@@ -82,6 +93,7 @@ int main() {
     {
         CircularBuffer<char, 2> cb;
         auto it = cb.begin();
+        std::cout << '\n';
 //        auto cb_2 = cb; // cb shouldn't be copyable, since it is in stack
 //        it--; // forward iterator - reverse not possible
 //        --it; // same as above

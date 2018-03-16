@@ -1,6 +1,5 @@
 #include <iostream>
-#include <type_traits>
-//#include <iterator>
+#include <iterator>
 
 /* Singly Linked List (SLL) data structure. Synonyms: link, node, etc.
  * Carries the actual data. */
@@ -27,7 +26,7 @@ public:
 
         self_type operator++(int) { self_type it = *this; raw = raw->forward; return it; }
         self_type operator++() { raw = raw->forward; return *this; }
-        value_type operator*() { return raw->data; }
+        value_type& operator*() { return raw->data; }
         pointer operator->() { return raw; }
         bool operator==(const self_type& rhs) { return raw == rhs.raw; } /* full or empty */
         bool operator!=(const self_type& rhs) { return raw != rhs.raw; }
