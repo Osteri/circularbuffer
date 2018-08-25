@@ -51,7 +51,7 @@ public:
 
     self_type operator++(int) { self_type it = *this; raw = raw->forward; return it; }
     self_type operator++() { raw = raw->forward; return *this; }
-    const reference operator*() { return *raw; }
+    reference operator*() { return *raw; }
     const pointer operator->() { return raw; }
     bool operator==(const self_type& rhs) { return raw == rhs.raw; }
     bool operator!=(const self_type& rhs) { return raw != rhs.raw; }
