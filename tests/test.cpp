@@ -140,7 +140,7 @@ int main() {
     std::cout << "Iterate cb with incrementing iterator: \n"
                  "Result: ";
     auto it = cb.begin();
-    for (int i = 0; i < cb.size(); ++i) {
+    for (size_t i = 0; i < cb.capacity(); ++i) {
       std::cout << *it++;
     }
     std::cout << "\n\n";

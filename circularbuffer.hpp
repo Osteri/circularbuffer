@@ -80,7 +80,7 @@ public:
   bool empty() noexcept { return r == w && r->read == true; }
   bool full() noexcept { return r == w && r->read == false; }
 
-  constexpr decltype(N) size() const noexcept { return N; }
+  constexpr decltype(N) capacity() const noexcept { return N; }
 
 #ifndef NDEBUG /* there is no std::cout in embedded systems. */
   friend std::ostream& operator<<(std::ostream& os, CircularBuffer& cb) {
