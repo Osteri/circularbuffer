@@ -47,7 +47,7 @@ public:
     typedef const_iterator self_type;
 
     const_iterator() {}
-    const_iterator(pointer ptr) : raw{ptr} { }
+    const_iterator(pointer ptr) : raw{ptr} {}
 
     self_type operator++(int) { self_type it = *this; raw = raw->forward; return it; }
     self_type operator++() { raw = raw->forward; return *this; }
