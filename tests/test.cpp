@@ -11,6 +11,28 @@ std::string bool_to_str(bool val) {
 
 int main() {
 
+  /* Test full() and empty(). */
+  {
+    CircularBuffer<std::string, 5> cb;
+    std::cout << "Is empty? should print 'true': ";
+    std::cout << bool_to_str(cb.empty()) << '\n';
+
+    std::cout << "Is empty? should print 'false': ";
+    cb.put("not empty anymore");
+    std::cout << bool_to_str(cb.empty()) << '\n';
+
+    std::cout << "Is full? should print 'false': ";
+    std::cout << bool_to_str(cb.full()) << '\n';
+
+    std::cout << "Is full? should print 'true': ";
+    cb.put("not empty anymore");
+    cb.put("not empty anymore");
+    cb.put("not empty anymore");
+    cb.put("not empty anymore");
+    std::cout << bool_to_str(cb.full()) << '\n';
+    std::cout << '\n';
+  }
+
   /* Test circular structure with 'std::string' type. */
   {
     CircularBuffer<std::string, 5> cb;
@@ -66,7 +88,7 @@ int main() {
     std::cout << "Result: ";
 
     CircularBuffer<char, 5> cb;
-    cb.put('H'); cb.put('J'); cb.put('K'); cb.put('L'); cb.put('M');
+    cb.put('H'); cb.put('E'); cb.put('L'); cb.put('L'); cb.put('O');
     for (auto it = cb.begin(); it != cb.end(); ++it)
       std::cout << *it;
     std::cout << '\n';
@@ -75,17 +97,22 @@ int main() {
     std::cout << "Result: ";
     for (auto it : cb)
       std::cout << it;
+
+    std::cout << '\n';
+
   }
 
   /* OutputIterator functionality. */
   std::cout << '\n';
   {
+    std::cout << "Should print '[g]->[h]->'" << '\n';
     CircularBuffer<char, 2> cb;
     auto it = cb.begin();
     *it = 'g';
     it++;
     *it = 'h';
     it++;
+    std::cout << cb << '\n';
   }
 
   /* These shouldn't compile. Only include compile errors a as comments. */
@@ -113,7 +140,7 @@ int main() {
   }
 
   /* Validate OutputIterator category operations.
-     * http://en.cppreference.com/w/cpp/concept/OutputIterator */
+   * http://en.cppreference.com/w/cpp/concept/OutputIterator */
   std::cout << '\n';
   {
     CircularBuffer<char, 2> cb;
@@ -167,6 +194,15 @@ int main() {
     std::cout << "Advance iterator 2 times in "<< cb << '\n'
               << "Result: "<< *it
               << '\n';
+  }
+
+  /* Test std::fill. */
+  std::cout << '\n';
+  {
+    std::cout << "Should print '[a]->[a]->[a]->'" << '\n';
+    CircularBuffer<char, 3> cb;
+    std::fill(std::begin(cb), std::end(cb), 'a');
+    std::cout << cb << '\n';
   }
 
   return 0;
