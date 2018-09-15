@@ -1,5 +1,8 @@
-#include <iostream>
-#include <iterator>
+#ifndef NDEBUG
+  #include <iostream>
+#endif
+#include <utility>
+#include <cassert>
 
 /* Singly Linked List (SLL) data structure. Synonyms: link, node, etc.
  * Carries the actual data. */
@@ -21,18 +24,23 @@ public:
     typedef std::forward_iterator_tag iterator_category;
     typedef iterator self_type;
 
-    iterator() {}
-    iterator(pointer ptr) : raw{ptr} {}
+    iterator() { }
+    iterator(pointer ptr) : raw{ptr} { }
 
-    self_type operator++(int) { self_type it = *this; raw = raw->forward; return it; }
-    self_type operator++() { raw = raw->forward; return *this; }
+    self_type operator++(int) { cnt++; self_type it = *this; raw = raw->forward; return it; }
+    self_type operator++() { cnt++; raw = raw->forward; return *this; }
     value_type& operator*() { return raw->data; }
     pointer operator->() { return raw; }
-    bool operator==(const self_type& rhs) { return raw == rhs.raw; } /* full or empty */
-    bool operator!=(const self_type& rhs) { return raw != rhs.raw; }
+    bool operator==(const self_type& rhs) { return cnt == rhs.cnt; }
+    bool operator!=(const self_type& rhs) { return cnt != rhs.cnt; }
 
   private:
     pointer raw;
+    size_t cnt = 0; // Cyclic iterator must have internal state.
+                    // Otherwise it's impossible to use range based
+                    // for loops in C++11 and beyond.
+    template<typename U, const size_t N>
+    friend class CircularBuffer; // access 'raw' and 'cnt' from CircularBuffer
   };
 
   /* const iterator. */
@@ -49,14 +57,19 @@ public:
     const_iterator() {}
     const_iterator(pointer ptr) : raw{ptr} {}
 
-    self_type operator++(int) { self_type it = *this; raw = raw->forward; return it; }
-    self_type operator++() { raw = raw->forward; return *this; }
-    reference operator*() { return *raw; }
-    const pointer operator->() { return raw; }
+    self_type operator++(int) { cnt++; self_type it = *this; raw = raw->forward; return it; }
+    self_type operator++() { cnt++; raw = raw->forward; return *this; }
+    const value_type& operator*() { return raw->data; }
+    pointer operator->() { return raw; }
     bool operator==(const self_type& rhs) { return raw == rhs.raw; }
     bool operator!=(const self_type& rhs) { return raw != rhs.raw; }
   private:
     pointer raw;
+    size_t cnt = 0; // Cyclic iterator must have internal state.
+                    // Otherwise it's impossible to use range based
+                    // for loops in C++11 and beyond.
+    template<typename U, const size_t N>
+    friend class CircularBuffer; // access 'raw' and 'cnt' from CircularBuffer
   };
 };
 
@@ -65,20 +78,30 @@ template<typename T, const size_t N>
 class CircularBuffer
 {
 public:
-  CircularBuffer() : r{elements}, w{elements} { init_links(); }
-  CircularBuffer(const CircularBuffer&) = delete;
-  CircularBuffer& operator=(const CircularBuffer&) = delete;
+  CircularBuffer(std::initializer_list<T> il) { // ilist ctor
+    init_links();
+    assert(il.size() == N);
+    std::copy(std::begin(il), std::end(il), std::begin(*this));
+  }
+  CircularBuffer() { init_links(); } // def ctor
+  CircularBuffer(CircularBuffer&&) = delete;                    // mov ctor
+  CircularBuffer& operator=(const CircularBuffer&) = delete;    // cpy assign ctor
 
   void put(const T& data) noexcept { w->read = false; w->data = data; ++w; }
+  void put(T&& data) noexcept { w->read = false; w->data = std::move(data); ++w; }
   T get() noexcept { r->read = true; return *r++; }
 
-  typedef typename SLL<T>::iterator it_t;
-  it_t begin() noexcept { return r; }
-  it_t end() noexcept { return w; }
+  typedef typename::SLL<T>::iterator it;
+  it begin() noexcept { r.cnt = 0; return r; }
+  it end() noexcept { w.cnt = N; return w; }
+
+  typedef typename::SLL<T>::const_iterator c_it;
+  c_it cbegin() noexcept { r.cnt = 0; return c_it(r.raw); }
+  c_it cend() noexcept { w.cnt = N; return c_it(w.raw); }
 
   bool has_unread_data() noexcept { return r->read == false; }
-  bool empty() noexcept { return r == w && r->read == true; }
-  bool full() noexcept { return r == w && r->read == false; }
+  bool empty() noexcept { return r.raw == w.raw && r->read == true; }
+  bool full() noexcept { return r.raw == w.raw && r->read == false; }
 
   constexpr decltype(N) capacity() const noexcept { return N; }
 
@@ -91,13 +114,12 @@ public:
 #endif
 private:
   SLL<T> elements[N];
-  typename SLL<T>::iterator r;
-  typename SLL<T>::iterator w;
+  typename SLL<T>::iterator r{elements};
+  typename SLL<T>::iterator w{elements};
 
   void init_links() noexcept {
     for (size_t i = 0, j = 1; i < N-1; i++, j++)
       elements[i].forward = &elements[j];
-
-    elements[N-1].forward = elements;
+    elements[N-1].forward = elements; // tail points to head
   }
 };

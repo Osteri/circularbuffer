@@ -2,6 +2,7 @@
 #include <type_traits>
 #include <algorithm>
 #include <utility>
+#include <memory>
 
 #include "../circularbuffer.hpp"
 
@@ -10,6 +11,13 @@ std::string bool_to_str(bool val) {
 }
 
 int main() {
+  {
+    CircularBuffer<int, 2> cb;
+    int i = 1;
+    cb.put(i);
+    cb.put(2);
+    std::cout << cb << '\n';
+  }
 
   /* Test full() and empty(). */
   {
@@ -93,9 +101,16 @@ int main() {
       std::cout << *it;
     std::cout << '\n';
 
+    auto b = cb.begin();
+    auto e = cb.end();
+    std::cout << '\n';
+    std::cout << "are begin and end EQUAL? " << bool_to_str(b == e) << '\n';
+    std::cout << "are begin and end NOT EQUAL? " << bool_to_str(b != e) << '\n';
+    std::cout << '\n';
+
     std::cout << "Iterating with 'post C++11 for loops'. \n";
     std::cout << "Result: ";
-    for (auto it : cb)
+    for (auto& it : cb)
       std::cout << it;
 
     std::cout << '\n';
@@ -115,13 +130,13 @@ int main() {
     std::cout << cb << '\n';
   }
 
-  /* These shouldn't compile. Only include compile errors a as comments. */
+  /* These shouldn't compile. Only include compile errors as comments. */
   std::cout << '\n';
   {
     CircularBuffer<char, 2> cb;
     auto it = cb.begin();
     std::cout << '\n';
-    //        auto cb_2 = cb; // cb shouldn't be copyable, since it is in stack
+    //        auto cb_2 = cb; // cb shouldn't be copyable, since it's in stack
     //        it--; // forward iterator - reverse not possible
     //        --it; // same as above
   }
@@ -204,6 +219,41 @@ int main() {
     std::fill(std::begin(cb), std::end(cb), 'a');
     std::cout << cb << '\n';
   }
+  /* Test std::fill. */
+  std::cout << '\n';
+  {
+    std::cout << "Should print '[a]->[b]->[c]->'" << '\n';
+    CircularBuffer<char, 3> cb;
+    char ch = 'a';
+    for(auto& c : cb)
+      c = ch++;
+    std::cout << cb << '\n';
+  }
 
+  /* Test std::initializer_list and std::algorithms. */
+  std::cout << '\n';
+  {
+    CircularBuffer<int, 6> cb = {44, 24, 900, 23, 10, 2};
+    std::cout << cb << '\n';
+
+    std::cout << "Should print found number" << '\n';
+    auto res = std::find(std::begin(cb), std::end(cb), 22);
+    if(res != std::end(cb))
+      std::cout << "Found: " << *res << '\n';
+
+    res = std::find(std::begin(cb), std::end(cb), 44);
+    if(res != std::end(cb))
+      std::cout << "Found: " << *res << '\n';
+  }
+
+  /* Test cons iterators. */
+  std::cout << '\n';
+  {
+    CircularBuffer<int, 6> cb = {44, 24, 900, 23, 10, 2};
+    auto it = cb.cbegin();
+    it++;
+//    *it = 2; // doesn't compile because const iterator
+    std::cout << *it << '\n';
+  }
   return 0;
 }
