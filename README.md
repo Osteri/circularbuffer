@@ -108,7 +108,7 @@ int main()
 }
 ```
 
-Notice how we overwrite the oldest data when it isn't being controlled. The characters 'a' and 'b' are now being overwritten with 'c' and 'd', since we didn't check before writing and because the buffer size is 2. This could be used when maximal throughput is very important.
+Notice how we overwrite the oldest data when it isn't being controlled. The characters 'a' and 'b' are now being overwritten with 'c' and 'd', since we didn't check before writing and because the buffer size is 2. This could be used when maximal throughput is important but loss of data isn't.
 
 ---
 
