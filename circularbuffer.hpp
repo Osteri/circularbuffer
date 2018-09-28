@@ -31,8 +31,9 @@ public:
     self_type operator++() { cnt++; raw = raw->forward; return *this; }
     value_type& operator*() { return raw->data; }
     pointer operator->() { return raw; }
-    bool operator==(const self_type& rhs) { return cnt == rhs.cnt; }
-    bool operator!=(const self_type& rhs) { return cnt != rhs.cnt; }
+    // iterators are equal if their counters (size_t) are same and they are same instance (iterator) OR they point to same node (SLL)
+    bool operator==(const self_type& rhs) { return (cnt == rhs.cnt) && ((this == &rhs) || (raw == rhs.raw)); }
+    bool operator!=(const self_type& rhs) { return (cnt != rhs.cnt) && ((this != &rhs) || (raw != rhs.raw)); }
 
   private:
     pointer raw;
@@ -59,8 +60,9 @@ public:
 
     self_type operator++(int) { cnt++; self_type it = *this; raw = raw->forward; return it; }
     self_type operator++() { cnt++; raw = raw->forward; return *this; }
-    const value_type& operator*() { return raw->data; }
+    const value_type operator*() { return raw->data; }
     pointer operator->() { return raw; }
+    // iterators are equal if their counters (size_t) are same and they are same instance (iterator) OR they point to same node (SLL)
     bool operator==(const self_type& rhs) { return raw == rhs.raw; }
     bool operator!=(const self_type& rhs) { return raw != rhs.raw; }
   private:
@@ -118,8 +120,9 @@ private:
   typename SLL<T>::iterator w{elements};
 
   void init_links() noexcept {
-    for (size_t i = 0, j = 1; i < N-1; i++, j++)
+    for (size_t i = 0, j = 1; i < N-1; i++, j++) {
       elements[i].forward = &elements[j];
+    }
     elements[N-1].forward = elements; // tail points to head
   }
 };

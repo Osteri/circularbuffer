@@ -13,6 +13,7 @@ This implementation isn't thread safe and doesn't use exceptions.
 - linked list structure always stack allocated
 - use iterators/`put()`/`get()` to iterate through elements
 - don't use modulo for element access (slow in some embedded systems)
+- no exceptions
 - support STL/std::<features> as much as possible
 - C++11, possibly convertible to C++03
 - less code as possible
@@ -26,6 +27,14 @@ Header-only inclusion is enough.
 
     wget https://raw.githubusercontent.com/Osteri/circularbuffer/master/circularbuffer.hpp
     #include "circularbuffer.hpp"
+
+### Run tests
+
+    git clone --recursive https://github.com/Osteri/circularbuffer.git
+    cd circularbuffer
+    mkdir build && cd build
+    cmake ..
+    ./test/circularbuffer-test
 
 ### Examples
 **Case 1:**
