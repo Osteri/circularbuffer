@@ -34,6 +34,7 @@ Header-only inclusion is enough.
     cd circularbuffer
     mkdir build && cd build
     cmake ..
+    make -j12
     ./test/circularbuffer-test
 
 ### Examples
